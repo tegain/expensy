@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<coverage generated="1549051744054" clover="3.2.0">
+  <project timestamp="1549051744054" name="All files">
+    <metrics statements="21" coveredstatements="0" conditionals="0" coveredconditionals="0" methods="6" coveredmethods="0" elements="27" coveredelements="0" complexity="0" loc="21" ncloc="21" packages="2" files="3" classes="3">
+      <package name="src">
+        <metrics statements="9" coveredstatements="0" conditionals="0" coveredconditionals="0" methods="4" coveredmethods="0"/>
+        <file name="App.ts" path="/Users/tegain/Lab/expensy/src/App.ts">
+          <metrics statements="9" coveredstatements="0" conditionals="0" coveredconditionals="0" methods="4" coveredmethods="0"/>
+          <line num="1" count="0" type="stmt"/>
+          <line num="2" count="0" type="stmt"/>
+          <line num="14" count="0" type="stmt"/>
+          <line num="16" count="0" type="stmt"/>
+          <line num="19" count="0" type="stmt"/>
+          <line num="27" count="0" type="stmt"/>
+          <line num="35" count="0" type="stmt"/>
+          <line num="36" count="0" type="stmt"/>
+          <line num="41" count="0" type="stmt"/>
+        </file>
+      </package>
+      <package name="src.modules.expenses">
+        <metrics statements="12" coveredstatements="0" conditionals="0" coveredconditionals="0" methods="2" coveredmethods="0"/>
+        <file name="expenses.controller.ts" path="/Users/tegain/Lab/expensy/src/modules/expenses/expenses.controller.ts">
+          <metrics statements="7" coveredstatements="0" conditionals="0" coveredconditionals="0" methods="2" coveredmethods="0"/>
+          <line num="3" count="0" type="stmt"/>
+          <line num="10" count="0" type="stmt"/>
+          <line num="18" count="0" type="stmt"/>
+          <line num="27" count="0" type="stmt"/>
+          <line num="28" count="0" type="stmt"/>
+          <line num="29" count="0" type="stmt"/>
+          <line num="30" count="0" type="stmt"/>
+        </file>
+        <file name="expenses.router.ts" path="/Users/tegain/Lab/expensy/src/modules/expenses/expenses.router.ts">
+          <metrics statements="5" coveredstatements="0" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
+          <line num="1" count="0" type="stmt"/>
+          <line num="2" count="0" type="stmt"/>
+          <line num="4" count="0" type="stmt"/>
+          <line num="6" count="0" type="stmt"/>
+          <line num="7" count="0" type="stmt"/>
+        </file>
+      </package>
+    </metrics>
+  </project>
+</coverage>

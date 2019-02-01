@@ -1,0 +1,9 @@
+.idea
+.vscode
+node_modules
+bin
+
+.env
+.env.*
+!.env.test
+!.env.*.dist
