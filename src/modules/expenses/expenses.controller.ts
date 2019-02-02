@@ -10,23 +10,32 @@ import { getDb } from '@src/database/config';
 export class ExpensesController {
 
   /**
-   * Get all expenses
+   * Get all expenses from database
    *
-   * @method getMany
+   * @param {Request} req
+   * @param {Response} res
+   * @static
    */
-  static getMany (req: Request, res: Response): Response {
-    return res.json({
-      expenses: [
-        { id: 1, name: 'test' },
-        { id: 2, name: 'test 2' },
-      ]
-    })
+  static async getMany (req: Request, res: Response) {
+    const db: Db = getDb();
+    const expenses = await db.collection('expenses').find().toArray();
+    return res.json(expenses);
   }
 
+  /**
+   * Add one expense to database
+   *
+   * @param {Request} req
+   * @param {Response} res
+   * @static
+   */
   static async addOne (req: Request, res: Response) {
     const db: Db = getDb();
-    const body = req.body;
-    const result = await db.collection('expenses').insertOne(body);
-    res.json(result.ops);
+    const expense = {
+      ...req.body,
+      created: Date.now()
+    };
+    const result = await db.collection('expenses').insertOne(expense);
+    res.json(result.ops[0]);
   }
 }
