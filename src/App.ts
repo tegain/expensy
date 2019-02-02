@@ -1,40 +1,40 @@
+import * as bodyParser from 'body-parser';
 import express from 'express';
-import * as bodyParser from "body-parser";
 import { ExpensesRouter } from './modules/expenses/expenses.router';
 
 class App {
 
-	public app: express.Application;
+  public app: express.Application;
 
   /**
    * App constructor
    *
    * @constructor
    */
-	constructor () {
-		this.app = express();
+  constructor () {
+    this.app = express();
 
-		this.config();
+    this.config();
 
-		this.routes();
+    this.routes();
 
-		// Get index route
-		this.index();
-	}
+    // Get index route
+    this.index();
+  }
 
   /**
    * Bootstrap routes
    * @private
    */
-	private routes (): void {
-		this.app.use(ExpensesRouter);
-	}
+  private routes (): void {
+    this.app.use(ExpensesRouter);
+  }
 
   /**
    * Set app configuration
    * @private
    */
-	private config (): void {
+  private config (): void {
     this.app.use(bodyParser.json());
   }
 
@@ -42,10 +42,10 @@ class App {
    * Index route
    * @private
    */
-	private index (): void {
-	  this.app.get('/', (req: express.Request, res: express.Response) => {
-	    res.json({});
-    })
+  private index (): void {
+    this.app.get('/', (req: express.Request, res: express.Response) => {
+      res.json({});
+    });
   }
 }
 

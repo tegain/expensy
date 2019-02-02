@@ -1,6 +1,6 @@
-import { Request, Response } from 'express';
-import { Db } from "mongodb";
 import { getDb } from '@src/database/config';
+import { Request, Response } from 'express';
+import { Db } from 'mongodb';
 
 /**
  * @class ExpensesController
@@ -16,7 +16,7 @@ export class ExpensesController {
    * @param {Response} res
    * @static
    */
-  static async getMany (req: Request, res: Response) {
+  public static async getMany (req: Request, res: Response) {
     const db: Db = getDb();
     const expenses = await db.collection('expenses').find().toArray();
     return res.json(expenses);
@@ -29,7 +29,7 @@ export class ExpensesController {
    * @param {Response} res
    * @static
    */
-  static async addOne (req: Request, res: Response) {
+  public static async addOne (req: Request, res: Response) {
     const db: Db = getDb();
     const expense = {
       ...req.body,

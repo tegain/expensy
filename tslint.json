@@ -12,7 +12,8 @@
     "trailing-comma": [ false ],
     "interface-name": [false],
     "no-console": [false],
-    "quotemark": [true, "single"]
+    "quotemark": [true, "single"],
+    "semicolon": [true, "always", "ignore-interfaces"]
   },
   "rulesDirectory": []
 }
