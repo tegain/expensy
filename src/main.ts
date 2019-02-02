@@ -1,4 +1,3 @@
-require('module-alias/register');
 import './config';
 import app from './App';
 import { MongoConnect } from './database/config';
