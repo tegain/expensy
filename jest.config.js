@@ -2,7 +2,8 @@ module.exports = {
   setupFiles: ['<rootDir>/tests/setupFiles.js'],
 	moduleFileExtensions: ['js', 'jsx', 'json', 'vue', 'ts'],
 	moduleNameMapper: {
-		'^@src/(.*)$': '<rootDir>/src/$1'
+		'^@src/(.*)$': '<rootDir>/src/$1',
+		'^@tests/(.*)$': '<rootDir>/tests/$1'
 	},
 	transform: {
     '^.+\\.tsx?$': 'ts-jest'

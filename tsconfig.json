@@ -67,7 +67,7 @@
   "exclude": [
     "node_modules",
     "bin",
-    "tests",
+    "tests/**/*.js",
     "jest.config.js",
     "webpack.config.js"
   ]

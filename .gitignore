@@ -7,3 +7,5 @@ bin
 .env.*
 !.env.test
 !.env.*.dist
+
+tests/__coverage__
