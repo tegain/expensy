@@ -1,7 +1,6 @@
-import { request } from '@tests/helpers';
 import { MongoConnect, getDb } from '@src/database/config';
-import app from '@src/App';
 import { invalidExpense } from '@tests/fixtures/expenses';
+import { Expense } from "@src/modules/expenses/expense.model";
 
 beforeAll(async () => {
   await MongoConnect(process.env.DB_URL);
@@ -9,13 +8,16 @@ beforeAll(async () => {
 
 afterAll(() => {
   getDb().close();
-  console.log('Closed database connection');
 });
 
 describe('ExpenseModel', () => {
-  it('should return 400 code when submitting invalid expense', async () => {
-    const response = await request(app).post('/expenses').send(invalidExpense);
-    expect(response.status).toBe(400);
-    expect.assertions(1);
+  it('should return error when submitting invalid expense', async () => {
+    const expense = new Expense(invalidExpense);
+    try {
+      await expense.save();
+    } catch (e) {
+      expect(e).toMatchObject({ code: 'SCHEMA_VALIDATION_ERROR' });
+      expect.assertions(1);
+    }
   });
 });
