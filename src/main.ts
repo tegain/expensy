@@ -9,7 +9,7 @@ MongoConnect(process.env.DB_URL)
   .then(() => {
     app.listen(PORT, (err: Error) => {
       if (err) return console.log(err);
-      return console.log(`[App::Info] Server is running at http://localhost:%s`, PORT);
+      console.log(`[App::Info] Server is running at http://localhost:%s`, PORT);
     });
   })
   .catch((err) => console.log(err));
