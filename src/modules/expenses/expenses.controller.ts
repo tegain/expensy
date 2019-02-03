@@ -1,6 +1,7 @@
-import { getDb } from '@src/database/config';
-import { Request, Response } from 'express';
 import { Db } from 'mongodb';
+import { Request, Response } from 'express';
+import { getDb } from '@src/database/config';
+import { Expense } from './expense.model';
 
 /**
  * @class ExpensesController
@@ -19,7 +20,7 @@ export class ExpensesController {
   public static async getMany (req: Request, res: Response) {
     const db: Db = getDb();
     const expenses = await db.collection('expenses').find().toArray();
-    return res.json(expenses);
+    res.json(expenses);
   }
 
   /**
@@ -30,12 +31,15 @@ export class ExpensesController {
    * @static
    */
   public static async addOne (req: Request, res: Response) {
-    const db: Db = getDb();
-    const expense = {
-      ...req.body,
-      created: Date.now()
-    };
-    const result = await db.collection('expenses').insertOne(expense);
-    res.json(result.ops[0]);
+    try {
+      const expense: Expense = new Expense(req.body);
+      await expense.save();
+      res.json(expense);
+    } catch (err) {
+      res.status(400).json({
+        data: err,
+        code: 'SCHEMA_VALIDATION_ERROR'
+      });
+    }
   }
 }
