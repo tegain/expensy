@@ -32,5 +32,6 @@ export const ExpenseSchema = Joi.object().keys({
   date: Joi.date().timestamp().required(),
   categories: Joi.array().default([ExpenseCategories.OTHER]),
   attachments: Joi.array().items(Joi.string().uri()),
-  currency: Joi.string().trim().uppercase().default('EUR')
+  currency: Joi.string().trim().uppercase().default('EUR'),
+  _id: Joi.string()
 });

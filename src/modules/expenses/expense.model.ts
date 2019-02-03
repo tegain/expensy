@@ -12,14 +12,15 @@ export class Expense {
 
   /**
    * Save expense to the database
+   *
+   * @return {ExpenseInterface}
    */
-  async save (): Promise<ExpenseInterface|PromiseRejectionEvent> {
+  async save (): Promise<any|PromiseRejectionEvent> {
     const db: Db = getDb();
 
     try {
       this.expense = await ExpensesService.normalize(this.expense);
-      const result = await db.collection('expenses').insertOne({ ...this.expense, createdAt: Date.now() });
-      return result.ops[0];
+      return await db.collection('expenses').insertOne({ ...this.expense, createdAt: Date.now() });
     } catch (e) {
       return Promise.reject({
         data: e,
@@ -29,7 +30,29 @@ export class Expense {
   }
 
   /**
+   * Find all expenses
+   *
+   * @return {ExpenseInterface[]}
+   */
+  static async findAll (): Promise<ExpenseInterface[]> {
+    const db: Db = getDb();
+    return await db.collection('expenses').find().toArray();
+  }
+
+  /**
+   * Find one expense by ID
+   *
+   * @param {string|ObjectId} id
+   * @return {ExpenseInterface}
+   */
+  static async findById (id: string|ObjectId): Promise<ExpenseInterface> {
+    const db: Db = getDb();
+    return await db.collection('expenses').findOne({ _id: new ObjectId(id) });
+  }
+
+  /**
    * Delete one expense from database by id
+   *
    * @param {string|ObjectId} id
    */
   static async deleteById (id: string|ObjectId): Promise<ExpenseInterface|PromiseRejectionEvent> {

@@ -1,12 +1,10 @@
-import { Db, ObjectId } from 'mongodb';
+import { ObjectId } from 'mongodb';
 import { Request, Response } from 'express';
-import { getDb } from '@src/database/config';
 import { Expense } from './expense.model';
+import { ExpenseInterface } from "@src/modules/expenses/expense.interface";
 
 /**
  * @class ExpensesController
- *
- * Contains expenses logic
  */
 export class ExpensesController {
 
@@ -18,9 +16,29 @@ export class ExpensesController {
    * @static
    */
   public static async findAll (req: Request, res: Response) {
-    const db: Db = getDb();
-    const expenses = await db.collection('expenses').find().toArray();
-    res.json(expenses);
+    const expenses: ExpenseInterface[] = await Expense.findAll();
+    res.status(200).json(expenses);
+  }
+
+  /**
+   * Find one expense by ID
+   *
+   * @param {Request} req
+   * @param {Response} res
+   * @static
+   */
+  public static async findById (req: Request, res: Response) {
+    const { id } = req.params;
+
+    if (!ObjectId.isValid(id)) {
+      return res.status(404).json({
+        data: `Invalid expense ID: ${id}.`,
+        code: 'EXPENSE_NOT_FOUND'
+      });
+    }
+
+    const expense: ExpenseInterface = await Expense.findById(id);
+    res.status(200).json(expense);
   }
 
   /**
@@ -34,7 +52,7 @@ export class ExpensesController {
     try {
       const expense: Expense = new Expense(req.body);
       await expense.save();
-      res.json(expense);
+      res.status(201).json(expense);
     } catch (err) {
       res.status(400).json(err);
     }
@@ -48,7 +66,7 @@ export class ExpensesController {
    * @static
    */
   public static async deleteOne (req: Request, res: Response) {
-    const { id } = req.body;
+    const { id } = req.params;
 
     if (!ObjectId.isValid(id)) {
       return res.status(404).json({
@@ -58,8 +76,8 @@ export class ExpensesController {
     }
 
     try {
-      const result = await Expense.deleteById(id);
-      res.json(result);
+      await Expense.deleteById(id);
+      res.status(204).send();
     } catch (err) {
       res.status(404).json(err);
     }
