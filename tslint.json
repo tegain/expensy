@@ -7,13 +7,16 @@
   "linterOptions": {
     "exclude": ["**/node_modules/**"]
   },
-  "jsRules": {},
+  "jsRules": {
+    "object-literal-sort-keys": false
+  },
   "rules": {
-    "trailing-comma": [ false ],
+    "trailing-comma": [false],
     "interface-name": [false],
     "no-console": [false],
     "quotemark": [true, "single"],
-    "semicolon": [true, "always", "ignore-interfaces"]
+    "semicolon": [true, "always", "ignore-interfaces"],
+    "object-literal-sort-keys": false
   },
   "rulesDirectory": []
 }

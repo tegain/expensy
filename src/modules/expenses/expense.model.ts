@@ -1,9 +1,10 @@
-import { Db, ObjectId } from 'mongodb';
 import { getDb } from '@src/database/config';
+import { Db, ObjectId } from 'mongodb';
 import { ExpenseInterface } from './expense.interface';
 import { ExpensesService } from './expenses.service';
 
 export class Expense {
+
   public expense: object;
 
   constructor (requestExpense: object) {
@@ -11,32 +12,13 @@ export class Expense {
   }
 
   /**
-   * Save expense to the database
-   *
-   * @return {ExpenseInterface}
-   */
-  async save (): Promise<any|PromiseRejectionEvent> {
-    const db: Db = getDb();
-
-    try {
-      this.expense = await ExpensesService.normalize(this.expense);
-      return await db.collection('expenses').insertOne({ ...this.expense, createdAt: Date.now() });
-    } catch (e) {
-      return Promise.reject({
-        data: e,
-        code: 'SCHEMA_VALIDATION_ERROR'
-      });
-    }
-  }
-
-  /**
    * Find all expenses
    *
    * @return {ExpenseInterface[]}
    */
-  static async findAll (): Promise<ExpenseInterface[]> {
+  public static async findAll (): Promise<ExpenseInterface[]> {
     const db: Db = getDb();
-    return await db.collection('expenses').find().toArray();
+    return db.collection('expenses').find().toArray();
   }
 
   /**
@@ -45,9 +27,9 @@ export class Expense {
    * @param {string|ObjectId} id
    * @return {ExpenseInterface}
    */
-  static async findById (id: string|ObjectId): Promise<ExpenseInterface> {
+  public static async findById (id: string | ObjectId): Promise<ExpenseInterface> {
     const db: Db = getDb();
-    return await db.collection('expenses').findOne({ _id: new ObjectId(id) });
+    return db.collection('expenses').findOne({ _id: new ObjectId(id) });
   }
 
   /**
@@ -55,7 +37,7 @@ export class Expense {
    *
    * @param {string|ObjectId} id
    */
-  static async deleteById (id: string|ObjectId): Promise<ExpenseInterface|PromiseRejectionEvent> {
+  public static async deleteById (id: string | ObjectId): Promise<ExpenseInterface | PromiseRejectionEvent> {
     const db: Db = getDb();
 
     try {
@@ -71,6 +53,25 @@ export class Expense {
       return result.value;
     } catch (e) {
       return Promise.reject(e);
+    }
+  }
+
+  /**
+   * Save expense to the database
+   *
+   * @return {ExpenseInterface}
+   */
+  public async save (): Promise<any | PromiseRejectionEvent> {
+    const db: Db = getDb();
+
+    try {
+      this.expense = await ExpensesService.normalize(this.expense);
+      return await db.collection('expenses').insertOne({ ...this.expense, createdAt: Date.now() });
+    } catch (e) {
+      return Promise.reject({
+        data: e,
+        code: 'SCHEMA_VALIDATION_ERROR'
+      });
     }
   }
 }

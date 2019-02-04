@@ -1,7 +1,7 @@
-import { ObjectId } from 'mongodb';
+import { ExpenseInterface } from '@src/modules/expenses/expense.interface';
 import { Request, Response } from 'express';
+import { ObjectId } from 'mongodb';
 import { Expense } from './expense.model';
-import { ExpenseInterface } from "@src/modules/expenses/expense.interface";
 
 /**
  * @class ExpensesController

@@ -1,8 +1,8 @@
-import { request } from '@tests/helpers';
-import { getDb, MongoConnect } from '@src/database/config';
 import app from '@src/App';
+import { getDb, MongoConnect } from '@src/database/config';
 import { invalidExpense, validExpense } from '@tests/fixtures/expenses';
-import { Db, ObjectId } from "mongodb";
+import { request } from '@tests/helpers';
+import { Db, ObjectId } from 'mongodb';
 
 beforeAll(async () => {
   await MongoConnect(process.env.DB_URL);
@@ -100,7 +100,7 @@ describe('ExpensesController', () => {
    * *********************************
    */
   describe('DELETE /expenses', () => {
-    let validObjectID = new ObjectId();
+    const validObjectID = new ObjectId();
 
     beforeAll(async () => {
       const db: Db = getDb();
@@ -115,7 +115,11 @@ describe('ExpensesController', () => {
     it('should return 404 if expense ID is not a valid ObjectID', async () => {
       const response = await request(app).delete('/expenses/12345');
       expect(response.status).toBe(404);
-      expect.assertions(1);
+      expect(response.body).toMatchObject({
+        data: `Invalid expense ID: 12345.`,
+        code: 'EXPENSE_NOT_FOUND'
+      });
+      expect.assertions(2);
     });
 
     it('should return 404 if expense ID is not found', async () => {
@@ -130,5 +134,5 @@ describe('ExpensesController', () => {
       expect(response.status).toBe(204);
       expect.assertions(1);
     });
-  })
+  });
 });

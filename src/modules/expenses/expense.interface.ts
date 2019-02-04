@@ -1,15 +1,15 @@
-import Joi from "joi";
+import Joi from 'joi';
 
 export interface ExpenseInterface {
+  attachments?: string[]
+  categories: ExpenseCategories[]
+  createdAt: number
+  currency?: string
+  date: Date | string
+  description?: string
   label: string
   merchantName?: string
   total: number
-  date: Date|string
-  categories: ExpenseCategories[]
-  createdAt: number
-  description?: string
-  attachments?: string[]
-  currency?: string
 }
 
 export enum ExpenseCategories {
