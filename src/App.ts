@@ -1,6 +1,9 @@
 import * as bodyParser from 'body-parser';
-import express from 'express';
-import { ExpensesRouter } from './modules/expenses/expenses.router';
+import express, { Response, NextFunction } from 'express';
+import { ExpenseRouter } from './modules/expense/expense.router';
+import { UserRouter } from './modules/user/user.router';
+import { ObjectId } from "bson";
+
 
 class App {
 
@@ -16,6 +19,16 @@ class App {
 
     this.config();
 
+    this.app.use((req: AppRequest, res: Response, next: NextFunction) => {
+      req.user = {
+        _id: new ObjectId(),
+        firstName: 'Thomas',
+        lastName: 'Test'
+      };
+      // console.log(req.user);
+      next();
+    });
+
     this.routes();
 
     // Get index route
@@ -27,7 +40,8 @@ class App {
    * @private
    */
   private routes (): void {
-    this.app.use(ExpensesRouter);
+    this.app.use(UserRouter);
+    this.app.use(ExpenseRouter);
   }
 
   /**
