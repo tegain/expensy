@@ -1,7 +1,7 @@
 import Joi from 'joi';
 import { ExpenseInterface, ExpenseSchema } from './expense.interface';
 
-export class ExpensesService {
+export class Normalizer {
   /**
    * Normalize and validate request expense before inserting into database
    *

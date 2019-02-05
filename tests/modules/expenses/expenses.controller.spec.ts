@@ -77,6 +77,7 @@ describe('ExpensesController', () => {
   describe('POST /expenses', () => {
     it('should insert expense in database and return result', async () => {
       const response = await request(app).post('/expenses').send(validExpense);
+      console.log(response)
       expect(response.status).toBe(201);
       expect(response.body.expense).toEqual(
         expect.objectContaining({

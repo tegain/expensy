@@ -1,15 +1,10 @@
 import { getDb } from '@src/database/config';
 import { Db, ObjectId } from 'mongodb';
 import { ExpenseInterface } from './expense.interface';
-import { ExpensesService } from './expenses.service';
 
 export class Expense {
 
-  public expense: object;
-
-  constructor (requestExpense: object) {
-    this.expense = requestExpense;
-  }
+  constructor (public expense: ExpenseInterface) {}
 
   /**
    * Find all expenses
@@ -29,7 +24,20 @@ export class Expense {
    */
   public static async findById (id: string | ObjectId): Promise<ExpenseInterface> {
     const db: Db = getDb();
-    return db.collection('expenses').findOne({ _id: new ObjectId(id) });
+    try {
+      const result = await db.collection('expenses').findOne({ _id: new ObjectId(id) });
+
+      if (!result.label) {
+        return Promise.reject({
+          data: `Invalid expense ID: ${id}.`,
+          code: 'EXPENSE_NOT_FOUND'
+        });
+      }
+
+      return result;
+    } catch (e) {
+      return Promise.reject(e);
+    }
   }
 
   /**
@@ -65,7 +73,6 @@ export class Expense {
     const db: Db = getDb();
 
     try {
-      this.expense = await ExpensesService.normalize(this.expense);
       return await db.collection('expenses').insertOne({ ...this.expense, createdAt: Date.now() });
     } catch (e) {
       return Promise.reject({

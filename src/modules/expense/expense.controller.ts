@@ -1,12 +1,13 @@
-import { ExpenseInterface } from '@src/modules/expenses/expense.interface';
-import { Request, Response } from 'express';
 import { ObjectId } from 'mongodb';
+import { Request, Response } from 'express';
+import { Normalizer } from "@src/services/Normalizer";
+import { ExpenseInterface, ExpenseSchema } from './expense.interface';
 import { Expense } from './expense.model';
 
 /**
- * @class ExpensesController
+ * @class ExpenseController
  */
-export class ExpensesController {
+export class ExpenseController {
 
   /**
    * Get all expenses from database
@@ -37,8 +38,12 @@ export class ExpensesController {
       });
     }
 
-    const expense: ExpenseInterface = await Expense.findById(id);
-    res.status(200).json(expense);
+    try {
+      const expense: ExpenseInterface = await Expense.findById(id);
+      res.status(200).json(expense);
+    } catch (err) {
+      res.status(404).json(err);
+    }
   }
 
   /**
@@ -50,7 +55,8 @@ export class ExpensesController {
    */
   public static async create (req: Request, res: Response) {
     try {
-      const expense: Expense = new Expense(req.body);
+      const validData = await Normalizer.normalize<ExpenseInterface>(req.body, ExpenseSchema);
+      const expense: Expense = new Expense(validData);
       await expense.save();
       res.status(201).json(expense);
     } catch (err) {
