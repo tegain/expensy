@@ -1,5 +1,5 @@
 import { getDb } from '@src/database/config';
-import { Db, ObjectId } from 'mongodb';
+import { Db, InsertOneWriteOpResult, ObjectId } from 'mongodb';
 import { ExpenseInterface } from './expense.interface';
 
 export class Expense {
@@ -69,7 +69,7 @@ export class Expense {
    *
    * @return {ExpenseInterface}
    */
-  public async save (): Promise<any | PromiseRejectionEvent> {
+  public async save (): Promise<InsertOneWriteOpResult | PromiseRejectionEvent> {
     const db: Db = getDb();
 
     try {
