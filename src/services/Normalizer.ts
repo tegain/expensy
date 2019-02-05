@@ -1,17 +1,18 @@
-import Joi from 'joi';
-import { ExpenseInterface, ExpenseSchema } from './expense.interface';
+import Joi, { JoiObject } from 'joi';
 
 export class Normalizer {
   /**
-   * Normalize and validate request expense before inserting into database
+   * Normalize and validate request data before inserting into database
    *
-   * @param {object} requestExpense
-   * @return {ExpenseInterface}
+   * @param {object} data
+   * @param {JoiObject} schema
+   * @return {Promise<T>}
    * @static
    */
-  public static async normalize (requestExpense: object): Promise<ExpenseInterface> {
+  public static async normalize<T> (data: object, schema: JoiObject): Promise<T> {
     try {
-      return await Joi.attempt(requestExpense, ExpenseSchema) as ExpenseInterface;
+      const normalizedData = await Joi.attempt(data, schema) as any;
+      return normalizedData as T;
     } catch (e) {
       return Promise.reject(e);
     }
