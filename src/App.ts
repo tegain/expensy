@@ -1,13 +1,16 @@
 import * as bodyParser from 'body-parser';
-import express, { Response, NextFunction } from 'express';
+import session from 'express-session';
+import express from 'express';
+import mongoDBStore  from 'connect-mongodb-session';
 import { ExpenseRouter } from './modules/expense/expense.router';
 import { UserRouter } from './modules/user/user.router';
-import { ObjectId } from "bson";
 
+const MongoDBStore: any = mongoDBStore(session);
 
 class App {
 
   public app: express.Application;
+  private store: any;
 
   /**
    * App constructor
@@ -18,16 +21,6 @@ class App {
     this.app = express();
 
     this.config();
-
-    this.app.use((req: AppRequest, res: Response, next: NextFunction) => {
-      req.user = {
-        _id: new ObjectId(),
-        firstName: 'Thomas',
-        lastName: 'Test'
-      };
-      // console.log(req.user);
-      next();
-    });
 
     this.routes();
 
@@ -50,6 +43,18 @@ class App {
    */
   private config (): void {
     this.app.use(bodyParser.json());
+
+    this.store = new MongoDBStore({
+      uri: process.env.DB_URL,
+      collection: 'sessions'
+    });
+
+    this.app.use(session({
+      secret: 'My secret key to change later',
+      resave: false,
+      saveUninitialized: false,
+      store: this.store
+    }));
   }
 
   /**

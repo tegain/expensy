@@ -22,8 +22,10 @@
   "author": "Thomas Egain",
   "license": "ISC",
   "devDependencies": {
+    "@types/connect-mongodb-session": "^0.0.0",
     "@types/dotenv": "^6.1.0",
     "@types/express": "^4.16.1",
+    "@types/express-session": "^1.15.11",
     "@types/jest": "^23.3.13",
     "@types/joi": "^14.3.1",
     "@types/mongodb": "^3.1.19",
@@ -47,8 +49,10 @@
   },
   "dependencies": {
     "body-parser": "^1.18.3",
+    "connect-mongodb-session": "^2.1.0",
     "dotenv": "^6.2.0",
     "express": "^4.16.4",
+    "express-session": "^1.15.6",
     "joi": "^14.3.1",
     "mongodb": "^3.1.13"
   }

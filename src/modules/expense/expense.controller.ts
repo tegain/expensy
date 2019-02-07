@@ -3,6 +3,7 @@ import { Request, Response } from 'express';
 import { Normalizer } from "@src/services/Normalizer";
 import { ExpenseInterface, ExpenseSchema } from './expense.interface';
 import { Expense } from './expense.model';
+import { User } from '@src/modules/user/user.model';
 
 /**
  * @class ExpenseController
@@ -17,7 +18,10 @@ export class ExpenseController {
    * @static
    */
   public static async findAll (req: Request, res: Response) {
-    const expenses: ExpenseInterface[] = await Expense.findAll();
+    if (!req.session.user) return res.status(400).send();
+
+    const { _id } = req.session.user;
+    const expenses: ExpenseInterface[] = await User.getExpenses(_id);
     res.status(200).json(expenses);
   }
 
@@ -56,9 +60,9 @@ export class ExpenseController {
   public static async create (req: Request, res: Response) {
     try {
       const validData = await Normalizer.normalize<ExpenseInterface>(req.body, ExpenseSchema);
-      const expense: Expense = new Expense(validData);
-      await expense.save();
-      res.status(201).json(expense);
+      const userId = req.session.user._id;
+      const result = await User.addExpense(userId, validData);
+      res.status(201).json(result);
     } catch (err) {
       res.status(400).json(err);
     }

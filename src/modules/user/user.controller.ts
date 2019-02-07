@@ -30,8 +30,15 @@ export class UserController {
     }
   }
 
+  /**
+   * Get current user details
+   *
+   * @param {AppRequest} req
+   * @param {Response} res
+   * @static
+   */
   public static async getCurrentUser (req: AppRequest, res: Response) {
-    const { _id } = req.user;
+    const { _id } = req.session.user;
 
     if (!ObjectId.isValid(_id)) {
       return res.status(404).json({
@@ -64,5 +71,39 @@ export class UserController {
     } catch (err) {
       res.status(400).json(err);
     }
+  }
+
+  /**
+   * Authenticate user
+   *
+   * @param {AppRequest} req
+   * @param {Response} res
+   * @static
+   */
+  public static async login (req: AppRequest, res: Response) {
+    try {
+      const user: UserInterface = await User.findById('5c5b47f294967f44b17ed38f');
+      req.session.isAuthenticated = true;
+      req.session.user = user;
+      res.status(200).json(req.session);
+    } catch (err) {
+      res.status(400).json(err);
+    }
+  }
+
+  /**
+   * Logout user
+   *
+   * @param {AppRequest} req
+   * @param {Response} res
+   * @static
+   */
+  public static logout (req: AppRequest, res: Response) {
+    req.session.destroy((err: Error) => {
+      if (err) {
+        console.log(`${new Date().toLocaleTimeString()} - [App::Error] Logout error: ${err}`);
+      }
+      res.redirect('/');
+    });
   }
 }
