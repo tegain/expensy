@@ -1,5 +1,5 @@
 import { getDb } from '@src/database/config';
-import { Db, InsertOneWriteOpResult, ObjectId } from 'mongodb';
+import { Db, ObjectId } from 'mongodb';
 import { ExpenseInterface } from './expense.interface';
 
 export class Expense {
@@ -61,24 +61,6 @@ export class Expense {
       return result.value;
     } catch (e) {
       return Promise.reject(e);
-    }
-  }
-
-  /**
-   * Save expense to the database
-   *
-   * @return {ExpenseInterface}
-   */
-  public async save (): Promise<InsertOneWriteOpResult | PromiseRejectionEvent> {
-    const db: Db = getDb();
-
-    try {
-      return await db.collection('expenses').insertOne({ ...this.expense, createdAt: Date.now() });
-    } catch (e) {
-      return Promise.reject({
-        data: e,
-        code: 'SCHEMA_VALIDATION_ERROR'
-      });
     }
   }
 }

@@ -67,13 +67,15 @@ export class UserController {
     try {
       const { email, password } = req.body;
       const doc: UserInterface = await User.findOne({ email });
-      const hashedPwd: string = await bcrypt.hash(password, 12);
 
       if (doc) return res.status(301).send('User already exists');
 
       const validData: UserInterface = await Normalizer.normalize<UserInterface>(req.body, UserSchema);
+      const hashedPwd: string = await bcrypt.hash(password, 12);
       const user: User = new User({ ...validData, password: hashedPwd });
       await user.save();
+
+      delete user.user.password;
       res.status(201).json(user);
     } catch (err) {
       res.status(400).json(err);
@@ -97,6 +99,7 @@ export class UserController {
       const doPwdMatch: boolean = await bcrypt.compare(password, user.password);
 
       if (doPwdMatch) {
+        delete user.password;
         req.session.isAuthenticated = true;
         req.session.user = user;
         await req.session.save();

@@ -17,7 +17,7 @@ export interface UserInterface {
 export const UserSchema = Joi.object().keys({
   email: Joi.string().trim().min(2).max(55).email().required(),
   password: Joi.string().trim().min(2).max(255).required(),
-  firstName: Joi.string().trim().min(2).max(55),
-  lastName: Joi.string().trim().min(2).max(55),
+  firstName: Joi.string().trim().min(2).max(55).required(),
+  lastName: Joi.string().trim().min(2).max(55).required(),
   expenses: Joi.array().items(Joi.object()).default([])
 });
