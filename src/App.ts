@@ -20,6 +20,7 @@ class App {
   constructor () {
     this.app = express();
 
+    // Init app config & middlewares
     this.config();
 
     this.routes();

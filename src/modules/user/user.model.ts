@@ -1,4 +1,4 @@
-import { Db, InsertOneWriteOpResult, ObjectId } from 'mongodb';
+import { Db, FilterQuery, InsertOneWriteOpResult, ObjectId } from 'mongodb';
 import { getDb } from '@src/database/config';
 import { UserInterface } from '@src/modules/user/user.interface';
 import { ExpenseInterface } from "@src/modules/expense/expense.interface";
@@ -25,16 +25,19 @@ export class User {
     }
   }
 
-  public static async findOne (filter: object): Promise<UserInterface> {
+  /**
+   * Find one user
+   *
+   * @param {object} filter
+   */
+  public static async findOne (filter: FilterQuery<UserInterface>): Promise<UserInterface> {
     const db: Db = getDb();
 
     try {
-      const result = await db.collection('users').findOne(
+      return await db.collection('users').findOne(
         filter,
         { projection: { expenses: 0 } }
       );
-
-      return result;
     } catch (e) {
       return Promise.reject({
         data: e,
@@ -43,6 +46,13 @@ export class User {
     }
   }
 
+  /**
+   * Find user by ID
+   *
+   * @param {ObjectId|string} id
+   *
+   * @return {Promise<UserInterface>}
+   */
   public static async findById (id: string | ObjectId): Promise<UserInterface> {
     const db: Db = getDb();
 
@@ -68,13 +78,18 @@ export class User {
     }
   }
 
+  /**
+   * Get user expenses
+   *
+   * @param {ObjectId|string} userId
+   *
+   * @return {Promise<ExpenseInterface[]>}
+   */
   public static async getExpenses (userId: string | ObjectId): Promise<ExpenseInterface[]> {
     const db: Db = getDb();
 
     try {
       const user: UserInterface = await db.collection('users').findOne({ _id: new ObjectId(userId) });
-
-      console.log('USER', user);
 
       if (!user) {
         return Promise.reject({
@@ -92,6 +107,14 @@ export class User {
     }
   }
 
+  /**
+   * Add expense to user document
+   *
+   * @param {ObjectId|string} userId
+   * @param {ExpenseInterface} expense
+   *
+   * @return {Promise<UserInterface[]>}
+   */
   public static async addExpense (userId: string | ObjectId, expense: ExpenseInterface): Promise<ExpenseInterface[]> {
     const db: Db = getDb();
 

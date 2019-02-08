@@ -11,6 +11,9 @@ export interface UserInterface {
   expenses?: ExpenseInterface[]
 }
 
+/**
+ * User schema validation
+ */
 export const UserSchema = Joi.object().keys({
   email: Joi.string().trim().min(2).max(55).email().required(),
   password: Joi.string().trim().min(2).max(255).required(),

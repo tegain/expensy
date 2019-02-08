@@ -24,6 +24,9 @@ export enum ExpenseCategories {
   UTILITIES = 'utilities'
 }
 
+/**
+ * Expense schema validation
+ */
 export const ExpenseSchema = Joi.object().keys({
   label: Joi.string().trim().min(2).max(75).required(),
   merchantName: Joi.string().trim().min(2),
