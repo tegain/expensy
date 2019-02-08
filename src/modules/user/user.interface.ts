@@ -4,13 +4,17 @@ import { ExpenseInterface } from '@src/modules/expense/expense.interface';
 
 export interface UserInterface {
   _id: ObjectId
-  firstName: string
-  lastName: string
+  email: string
+  password?: string
+  firstName?: string
+  lastName?: string
   expenses?: ExpenseInterface[]
 }
 
 export const UserSchema = Joi.object().keys({
-  firstName: Joi.string().trim().min(2).max(55).required(),
-  lastName: Joi.string().trim().min(2).max(55).required(),
+  email: Joi.string().trim().min(2).max(55).email().required(),
+  password: Joi.string().trim().min(2).max(255).required(),
+  firstName: Joi.string().trim().min(2).max(55),
+  lastName: Joi.string().trim().min(2).max(55),
   expenses: Joi.array().items(Joi.object()).default([])
 });

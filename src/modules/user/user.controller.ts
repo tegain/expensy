@@ -1,4 +1,5 @@
 import { Response } from 'express';
+import bcrypt from 'bcryptjs';
 import { ObjectId } from "mongodb";
 import { Normalizer } from "@src/services/Normalizer";
 import { UserInterface, UserSchema } from '@src/modules/user/user.interface';
@@ -64,8 +65,14 @@ export class UserController {
    */
   public static async create (req: AppRequest, res: Response) {
     try {
+      const { email, password } = req.body;
+      const doc = await User.findOne({ email });
+      const hashedPwd = await bcrypt.hash(password, 12);
+
+      if (doc) return res.status(301).send('User already exists');
+
       const validData = await Normalizer.normalize<UserInterface>(req.body, UserSchema);
-      const user: User = new User(validData);
+      const user: User = new User({ ...validData, password: hashedPwd });
       await user.save();
       res.status(201).json(user);
     } catch (err) {
@@ -82,10 +89,21 @@ export class UserController {
    */
   public static async login (req: AppRequest, res: Response) {
     try {
-      const user: UserInterface = await User.findById('5c5b47f294967f44b17ed38f');
-      req.session.isAuthenticated = true;
-      req.session.user = user;
-      res.status(200).json(req.session);
+      const { email, password } = req.body;
+      const user: UserInterface = await User.findOne({ email });
+
+      if (!user) return res.status(401).send('Wrong email');
+
+      const doPwdMatch = await bcrypt.compare(password, user.password);
+
+      if (doPwdMatch) {
+        req.session.isAuthenticated = true;
+        req.session.user = user;
+        await req.session.save();
+        res.status(200).json(req.session);
+      } else {
+        res.status(401).send();
+      }
     } catch (err) {
       res.status(400).json(err);
     }

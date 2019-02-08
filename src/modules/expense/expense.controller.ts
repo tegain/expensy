@@ -22,6 +22,7 @@ export class ExpenseController {
 
     const { _id } = req.session.user;
     const expenses: ExpenseInterface[] = await User.getExpenses(_id);
+    // console.log('EXPENSES', expenses);
     res.status(200).json(expenses);
   }
 

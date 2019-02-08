@@ -25,6 +25,24 @@ export class User {
     }
   }
 
+  public static async findOne (filter: object): Promise<UserInterface> {
+    const db: Db = getDb();
+
+    try {
+      const result = await db.collection('users').findOne(
+        filter,
+        { projection: { expenses: 0 } }
+      );
+
+      return result;
+    } catch (e) {
+      return Promise.reject({
+        data: e,
+        code: 'USER_NOT_FOUND'
+      });
+    }
+  }
+
   public static async findById (id: string | ObjectId): Promise<UserInterface> {
     const db: Db = getDb();
 
@@ -56,7 +74,9 @@ export class User {
     try {
       const user: UserInterface = await db.collection('users').findOne({ _id: new ObjectId(userId) });
 
-      if (!user.firstName) {
+      console.log('USER', user);
+
+      if (!user) {
         return Promise.reject({
           data: `Invalid user ID: ${userId}.`,
           code: 'USER_NOT_FOUND'

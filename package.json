@@ -48,6 +48,8 @@
     "webpack-node-externals": "^1.7.2"
   },
   "dependencies": {
+    "@types/bcryptjs": "^2.4.2",
+    "bcryptjs": "^2.4.3",
     "body-parser": "^1.18.3",
     "connect-mongodb-session": "^2.1.0",
     "dotenv": "^6.2.0",
