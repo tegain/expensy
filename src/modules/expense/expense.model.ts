@@ -2,6 +2,8 @@ import { getDb } from '@src/database/config';
 import { Db, ObjectId } from 'mongodb';
 import { ExpenseInterface } from './expense.interface';
 
+const EXPENSES_COLLECTION = 'expenses';
+
 export class Expense {
 
   constructor (public expense: ExpenseInterface) {}
@@ -13,7 +15,7 @@ export class Expense {
    */
   public static async findAll (): Promise<ExpenseInterface[]> {
     const db: Db = getDb();
-    return db.collection('expenses').find().toArray();
+    return db.collection(EXPENSES_COLLECTION).find().toArray();
   }
 
   /**
@@ -25,7 +27,7 @@ export class Expense {
   public static async findById (id: string | ObjectId): Promise<ExpenseInterface> {
     const db: Db = getDb();
     try {
-      const result = await db.collection('expenses').findOne({ _id: new ObjectId(id) });
+      const result = await db.collection(EXPENSES_COLLECTION).findOne({ _id: new ObjectId(id) });
 
       if (!result.label) {
         return Promise.reject({
@@ -49,7 +51,7 @@ export class Expense {
     const db: Db = getDb();
 
     try {
-      const result = await db.collection('expenses').findOneAndDelete({ _id: new ObjectId(id) });
+      const result = await db.collection(EXPENSES_COLLECTION).findOneAndDelete({ _id: new ObjectId(id) });
 
       if (!result.value) {
         return Promise.reject({

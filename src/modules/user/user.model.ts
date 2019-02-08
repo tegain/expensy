@@ -3,6 +3,8 @@ import { getDb } from '@src/database/config';
 import { UserInterface } from '@src/modules/user/user.interface';
 import { ExpenseInterface } from "@src/modules/expense/expense.interface";
 
+const USERS_COLLECTION: string = 'users';
+
 export class User {
 
   constructor (public user: UserInterface) {}
@@ -16,7 +18,7 @@ export class User {
     const db: Db = getDb();
 
     try {
-      return await db.collection('users').insertOne({ ...this.user, createdAt: Date.now() });
+      return await db.collection(USERS_COLLECTION).insertOne({ ...this.user, createdAt: Date.now() });
     } catch (e) {
       return Promise.reject({
         data: e,
@@ -34,7 +36,7 @@ export class User {
     const db: Db = getDb();
 
     try {
-      return await db.collection('users').findOne(
+      return await db.collection(USERS_COLLECTION).findOne(
         filter,
         { projection: { expenses: 0 } }
       );
@@ -57,7 +59,7 @@ export class User {
     const db: Db = getDb();
 
     try {
-      const result = await db.collection('users').findOne(
+      const result = await db.collection(USERS_COLLECTION).findOne(
         { _id: new ObjectId(id) },
         { projection: { expenses: 0 } }
       );
@@ -89,7 +91,7 @@ export class User {
     const db: Db = getDb();
 
     try {
-      const user: UserInterface = await db.collection('users').findOne({ _id: new ObjectId(userId) });
+      const user: UserInterface = await db.collection(USERS_COLLECTION).findOne({ _id: new ObjectId(userId) });
 
       if (!user) {
         return Promise.reject({
@@ -119,7 +121,7 @@ export class User {
     const db: Db = getDb();
 
     try {
-      const user: UserInterface = await db.collection('users').findOne({ _id: new ObjectId(userId) });
+      const user: UserInterface = await db.collection(USERS_COLLECTION).findOne({ _id: new ObjectId(userId) });
       const userExpenses: ExpenseInterface[] = user.expenses;
       userExpenses.push(expense);
 

@@ -11,7 +11,7 @@ export class Normalizer {
    */
   public static async normalize<T> (data: object, schema: JoiObject): Promise<T> {
     try {
-      const normalizedData = await Joi.attempt(data, schema) as any;
+      const normalizedData: any = await Joi.attempt(data, schema);
       return normalizedData as T;
     } catch (e) {
       return Promise.reject(e);
