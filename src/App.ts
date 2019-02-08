@@ -1,9 +1,10 @@
-import * as bodyParser from 'body-parser';
-import session from 'express-session';
 import express from 'express';
-import mongoDBStore  from 'connect-mongodb-session';
-import { ExpenseRouter } from './modules/expense/expense.router';
-import { UserRouter } from './modules/user/user.router';
+import session from 'express-session';
+import * as bodyParser from 'body-parser';
+import mongoDBStore from 'connect-mongodb-session';
+import { BudgetRouter } from '@src/modules/budget/budget.router';
+import { ExpenseRouter } from '@src/modules/expense/expense.router';
+import { UserRouter } from '@src/modules/user/user.router';
 
 const MongoDBStore: any = mongoDBStore(session);
 
@@ -23,6 +24,7 @@ class App {
     // Init app config & middlewares
     this.config();
 
+    // Init app routes
     this.routes();
 
     // Get index route
@@ -36,6 +38,7 @@ class App {
   private routes (): void {
     this.app.use(UserRouter);
     this.app.use(ExpenseRouter);
+    this.app.use(BudgetRouter);
   }
 
   /**
@@ -51,7 +54,7 @@ class App {
     });
 
     this.app.use(session({
-      secret: 'My secret key to change later',
+      secret: process.env.SESSION_SECRET,
       resave: false,
       saveUninitialized: false,
       store: this.store

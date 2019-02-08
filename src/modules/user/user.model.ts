@@ -1,31 +1,14 @@
 import { Db, FilterQuery, InsertOneWriteOpResult, ObjectId } from 'mongodb';
 import { getDb } from '@src/database/config';
+import { ExpenseInterface } from '@src/modules/expense/expense.interface';
 import { UserInterface } from '@src/modules/user/user.interface';
-import { ExpenseInterface } from "@src/modules/expense/expense.interface";
+import { userError } from '@src/modules/user/user.controller';
 
 const USERS_COLLECTION: string = 'users';
 
 export class User {
 
   constructor (public user: UserInterface) {}
-
-  /**
-   * Save expense to the database
-   *
-   * @return {ExpenseInterface}
-   */
-  public async save (): Promise<InsertOneWriteOpResult | PromiseRejectionEvent> {
-    const db: Db = getDb();
-
-    try {
-      return await db.collection(USERS_COLLECTION).insertOne({ ...this.user, createdAt: Date.now() });
-    } catch (e) {
-      return Promise.reject({
-        data: e,
-        code: 'SCHEMA_VALIDATION_ERROR'
-      });
-    }
-  }
 
   /**
    * Find one user
@@ -65,10 +48,7 @@ export class User {
       );
 
       if (!result.firstName) {
-        return Promise.reject({
-          data: `Invalid user ID: ${id}.`,
-          code: 'USER_NOT_FOUND'
-        });
+        return Promise.reject(userError(id));
       }
 
       return result;
@@ -94,10 +74,7 @@ export class User {
       const user: UserInterface = await db.collection(USERS_COLLECTION).findOne({ _id: new ObjectId(userId) });
 
       if (!user) {
-        return Promise.reject({
-          data: `Invalid user ID: ${userId}.`,
-          code: 'USER_NOT_FOUND'
-        });
+        return Promise.reject(userError(userId));
       }
 
       return user.expenses;
@@ -121,21 +98,14 @@ export class User {
     const db: Db = getDb();
 
     try {
-      const user: UserInterface = await db.collection(USERS_COLLECTION).findOne({ _id: new ObjectId(userId) });
-      const userExpenses: ExpenseInterface[] = user.expenses;
-      userExpenses.push(expense);
-
-      const result = await db.collection('users').findOneAndUpdate(
+      const result = await db.collection(USERS_COLLECTION).findOneAndUpdate(
         { _id: new ObjectId(userId) },
-        { $set: { expenses: userExpenses } },
-        { projection: { 'expenses': 1 } }
+        { $push: { expenses: expense } },
+        { projection: { expenses: 1 } }
       );
 
       if (!result.value) {
-        return Promise.reject({
-          data: `Invalid user ID: ${userId}.`,
-          code: 'USER_NOT_FOUND'
-        });
+        return Promise.reject(userError(userId));
       }
 
       return result.value;
@@ -143,6 +113,24 @@ export class User {
       return Promise.reject({
         data: e,
         code: 'USER_NOT_FOUND'
+      });
+    }
+  }
+
+  /**
+   * Save expense to the database
+   *
+   * @return {ExpenseInterface}
+   */
+  public async save (): Promise<InsertOneWriteOpResult | PromiseRejectionEvent> {
+    const db: Db = getDb();
+
+    try {
+      return await db.collection(USERS_COLLECTION).insertOne({ ...this.user, createdAt: Date.now() });
+    } catch (e) {
+      return Promise.reject({
+        data: e,
+        code: 'SCHEMA_VALIDATION_ERROR'
       });
     }
   }

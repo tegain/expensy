@@ -11,6 +11,10 @@
     "object-literal-sort-keys": false
   },
   "rules": {
+    "ordered-imports": [true, {
+      "import-sources-order": "any",
+      "named-imports-order": "case-insensitive"
+    }],
     "trailing-comma": [false],
     "interface-name": [false],
     "no-console": [false],

@@ -1,6 +1,6 @@
 // tslint:disable-next-line
-import './config';
 import app from './App';
+import './config';
 import { MongoConnect } from './database/config';
 
 const PORT: number = 3000;

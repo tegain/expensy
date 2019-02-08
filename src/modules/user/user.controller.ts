@@ -1,9 +1,10 @@
-import { Response } from 'express';
 import bcrypt from 'bcryptjs';
-import { ObjectId } from "mongodb";
-import { Normalizer } from "@src/services/Normalizer";
+import { Response } from 'express';
+import { ObjectId } from 'mongodb';
+import { ValidationError } from "@src/types/ValidationError";
+import { Normalizer } from '@src/services/Normalizer';
 import { UserInterface, UserSchema } from '@src/modules/user/user.interface';
-import { User } from './user.model';
+import { User } from '@src/modules/user/user.model';
 
 export class UserController {
   /**
@@ -11,20 +12,20 @@ export class UserController {
    *
    * @param {AppRequest} req
    * @param {Response} res
+   *
    * @static
    */
   public static async findById (req: AppRequest, res: Response) {
     const { id } = req.params;
 
     if (!ObjectId.isValid(id)) {
-      return res.status(404).json({
-        data: `Invalid user ID: ${id}.`,
-        code: 'USER_NOT_FOUND'
-      });
+      return res.status(404).json(userError(id));
     }
 
     try {
       const user: UserInterface = await User.findById(id);
+      delete user.password;
+
       res.status(200).json(user);
     } catch (err) {
       res.status(404).json(err);
@@ -36,20 +37,20 @@ export class UserController {
    *
    * @param {AppRequest} req
    * @param {Response} res
+   *
    * @static
    */
   public static async getCurrentUser (req: AppRequest, res: Response) {
     const { _id } = req.session.user;
 
     if (!ObjectId.isValid(_id)) {
-      return res.status(404).json({
-        data: `Invalid user ID: ${_id}.`,
-        code: 'USER_NOT_FOUND'
-      });
+      return res.status(404).json(userError(_id));
     }
 
     try {
       const user: UserInterface = await User.findById(_id);
+      delete user.password;
+
       res.status(200).json(user);
     } catch (err) {
       res.status(404).json(err);
@@ -61,6 +62,7 @@ export class UserController {
    *
    * @param {AppRequest} req
    * @param {Response} res
+   *
    * @static
    */
   public static async create (req: AppRequest, res: Response) {
@@ -74,8 +76,8 @@ export class UserController {
       const hashedPwd: string = await bcrypt.hash(password, 12);
       const user: User = new User({ ...validData, password: hashedPwd });
       await user.save();
-
       delete user.user.password;
+
       res.status(201).json(user);
     } catch (err) {
       res.status(400).json(err);
@@ -87,6 +89,7 @@ export class UserController {
    *
    * @param {AppRequest} req
    * @param {Response} res
+   *
    * @static
    */
   public static async login (req: AppRequest, res: Response) {
@@ -117,6 +120,7 @@ export class UserController {
    *
    * @param {AppRequest} req
    * @param {Response} res
+   *
    * @static
    */
   public static logout (req: AppRequest, res: Response) {
@@ -124,7 +128,18 @@ export class UserController {
       if (err) {
         console.log(`${new Date().toLocaleTimeString()} - [App::Error] Logout error: ${err}`);
       }
-      res.redirect('/');
+      res.status(200).redirect('/');
     });
   }
+}
+
+/**
+ * @param {string|ObjectId} id
+ * @return {ValidationError}
+ */
+export function userError (id: string | ObjectId): ValidationError {
+  return {
+    data: `Invalid user ID: ${id}.`,
+    code: 'USER_NOT_FOUND'
+  };
 }

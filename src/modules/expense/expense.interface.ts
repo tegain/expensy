@@ -1,4 +1,5 @@
 import Joi from 'joi';
+import { ObjectId } from 'mongodb';
 
 export interface ExpenseInterface {
   attachments?: string[]
@@ -10,6 +11,7 @@ export interface ExpenseInterface {
   label: string
   merchantName?: string
   total: number
+  bindToBudget?: ObjectId
 }
 
 export enum ExpenseCategories {
@@ -35,5 +37,6 @@ export const ExpenseSchema = Joi.object().keys({
   date: Joi.date().timestamp().required(),
   categories: Joi.array().default([ExpenseCategories.OTHER]),
   attachments: Joi.array().items(Joi.string().uri()),
-  currency: Joi.string().trim().uppercase().default('EUR')
+  currency: Joi.string().trim().uppercase().default('EUR'),
+  bindToBudget: Joi.string().trim().default(null)
 });

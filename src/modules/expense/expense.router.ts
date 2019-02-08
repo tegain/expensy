@@ -1,6 +1,6 @@
 import express from 'express';
-import { ExpenseController } from './expense.controller';
 import { requiresAuth } from '@src/middlewares/requiresAuth';
+import { ExpenseController } from '@src/modules/expense/expense.controller';
 
 export const ExpenseRouter: express.Router = express.Router();
 

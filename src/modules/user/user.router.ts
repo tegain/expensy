@@ -1,6 +1,6 @@
 import express from 'express';
-import { UserController } from './user.controller';
 import { requiresAuth } from '@src/middlewares/requiresAuth';
+import { UserController } from '@src/modules/user/user.controller';
 
 export const UserRouter: express.Router = express.Router();
 
